@@ -44,15 +44,10 @@ ALL:
 	$(MAKE) step_H
 
 $(TABLEDIR)/$(REFNAME)_%.gbk:
+	# Replaces original steps: B (table_1_gen.py), C (table_1_extender.py) & category_gen.py
 	mkdir -p `dirname $@`
-	# B. Building table 1
-	# python table_1_gen.py ../antiSMASH_input/PAL/c00001_Moorea_...cluster001.gbk PAL_001
-	python table_1_gen.py `ls $(INPUTDIR)/$(REFNAME)/*cluster$*.gbk` $(TABLEDIR)/$(REFNAME)_$*
-	# python category_gen.py PAL_001
-	python category_gen.py $(TABLEDIR)/$(REFNAME)_$*
-	# C. Extending table_1 with best hits
-	python table_1_extender.py $(REFNAME) $*
-	-rm temp.txt
+	# python table_1_gen.py ../antiSMASH_input/PAL/c00001_Moorea_...cluster001.gbk PAL_001 PAL 001
+	python table_1.py `ls $(INPUTDIR)/$(REFNAME)/*cluster$*.gbk` $(TABLEDIR)/$(REFNAME)_$* $(REFNAME) $*
 
 $(TABLEDIR)/$(REFNAME)_%_table2_1.csv: $(TABLEDIR)/$(REFNAME)_%.gbk
 	# D. Creating distance matrixes and running DBScan for subcluster divisions (table 2):
