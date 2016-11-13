@@ -22,7 +22,7 @@ def parse_antiSMASH(content):
 
     rule_table_genes = r"""
         (?P<subject_gene> \w+ \"?) \t
-        \w+ \t
+        (?P<hit_gene> \w+ ) \t
         (?P<location_start> \d+) \t
         (?P<location_end> \d+) \t
         (?P<strands> [+|-]) \t
