@@ -12,11 +12,12 @@ def main():
 @main.command(name="download-hits")
 @click.option('--outputdir', default='./', type=click.Path(exists=True),
         help="Path to save the NCBI clusters.")
-@click.argument('mgbfile', type=click.Path(exists=True))
+@click.argument('mgbfile', type=click.Path(exists=True), nargs=-1)
         #help="Multigeneblast file containing NCBI references to be downloaded.")
 def downloadHits(mgbfile, outputdir):
     """Download NCBI clusters listed t in multigeneblast file."""
-    download_hits(mgbfile, outputdir)
+    for f in mgbfile:
+        download_hits(f, outputdir)
 
 @main.command(name="download-MIBiG")
 @click.option('--outputdir', default='./', type=click.Path(exists=True),
