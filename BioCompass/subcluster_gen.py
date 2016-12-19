@@ -14,40 +14,51 @@ table1_df['product'].fillna('None', inplace=True)
 
 #This first portion will create the distance matrix
 
-def score_match(table, index_gene1, index_gene2):
+def criteria_category(gene1, gene2):
+    if (gene1.category == 'hypothetical') and \
+            (gene2.category == 'hypothetical'):
+                return 1
+    elif (gene1.category == 'hypothetical') or \
+            (gene2.category == 'hypothetical'):
+                return 2
+    elif (gene1.category == gene2.category):
+            return 5
+
+
+def criteria_best_git_BGC(gene1, gene2):
     score = 0
-    gene1_category = table1_df.category.loc[index_gene1]
-    gene2_category = table1_df.category.loc[index_gene2]
-    if  gene1_category == 'hypothetical' or gene2_category == 'hypothetical':
-        if gene1_category == gene2_category:
-            score = score + 1
-        elif gene1_category != gene2_category:
-            score = score + 2
-    else:
-        if gene1_category == gene2_category:
-            score = score + 5
-    gene1_best_BGC = table1_df.best_hit_BGC.loc[index_gene1]
-    gene2_best_BGC = table1_df.best_hit_BGC.loc[index_gene2]
-    if gene1_best_BGC != 'None' and gene2_best_BGC != 'None':
-        if gene1_best_BGC == gene2_best_BGC:
-            score = score + 2
-            gene1_best_hit_pos = re.search(r'^\D*([0-9]*)',table1_df.best_hit_gene_loc.loc[index_gene1])
-            gene2_best_hit_pos = re.search(r'^\D*([0-9]*)',table1_df.best_hit_gene_loc.loc[index_gene2])
-            dif_best_hit_pos = abs(abs((int(gene2_best_hit_pos.group(1)) - int(gene1_best_hit_pos.group(1)))) - abs((index_gene2-index_gene1)))
+    if gene1.best_hit_BGC != 'None' and gene2.best_hit_BGC != 'None':
+        if gene1.best_hit_BGC == gene2.best_hit_BGC:
+            score += 2
+            gene1_best_hit_pos = re.search(
+                    r'^\D*([0-9]*)', gene1.best_hit_gene_loc)
+            gene2_best_hit_pos = re.search(
+                    r'^\D*([0-9]*)', gene2.best_hit_gene_loc)
+            dif_best_hit_pos = abs(abs((int(gene2_best_hit_pos.group(1)) - int(gene1_best_hit_pos.group(1)))) - abs((gene2.id-gene1.id)))
             if dif_best_hit_pos == 0:
-                score = score + 3
+                score += 3
             elif dif_best_hit_pos == 1:
-                score = score + 2
+                score += 2
             elif dif_best_hit_pos == 2:
-                score = score + 1
+                score += 1
     else:
-        score = score + 1
+        score += 1
+
+    return score
+
+def score_match(gene1, gene2, criteria=None):
+    score = 0
+    score += criteria_category(gene1, gene2)
+    score += criteria_best_git_BGC(gene1, gene2)
+
     return score
 
 for index,row in table1_df.iterrows():
     scores = []
     for gene in range(0,len(table1_df)):
-        scores.append(score_match(table1_df,gene,index))
+        gene1 = table1_df.loc[gene]
+        gene2 = table1_df.loc[index]
+        scores.append(score_match(gene1, gene2))
     if index == 0:
         A = np.vstack([scores])
     else:
