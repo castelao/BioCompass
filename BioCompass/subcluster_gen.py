@@ -9,8 +9,8 @@ from sklearn.cluster import DBSCAN
 
 script, strain_name = argv
 
-table1_df = pd.read_csv('%s_table1.csv' % strain_name, sep='\t')
-table1_df['product'].fillna('None', inplace=True)
+store = pd.HDFStore('%s.h5' % strain_name)
+table1_df = store['table1']
 
 #This first portion will create the distance matrix
 
