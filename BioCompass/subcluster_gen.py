@@ -1,3 +1,4 @@
+import os
 from sys import argv
 import pandas as pd
 import re
@@ -8,6 +9,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 
 script, strain_name = argv
+strain_id = os.path.basename(strain_name)
 
 store = pd.HDFStore('%s.h5' % strain_name)
 table1 = store['table1']
@@ -126,5 +128,8 @@ for itn in range(1,len(A)):
             find_category(categories,col5)
         frames = {'BGC':col1, 'subcluster':col2, 'CDSs':col3, 'loci':col4, 'category':col5}
         count = count + 1
+        table2 = pd.DataFrame(frames, index=None)
+        store['%s_table2_%d' % (strain_id, count)] = table2
+
         table2_df = pd.DataFrame(frames, index=None)
         table2_df.to_csv('%s_table2_%d.csv' % (strain_name,count), sep='\t', index=False)
