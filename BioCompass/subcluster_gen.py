@@ -86,10 +86,10 @@ def find_category(categories,col5):
         col5.append('biosynthetic')
     else:
         if len(categories) > 1:
-            category = re.search(r'^\[\(\'(\S*)\'',str(Counter(categories).most_common(1))).group(1)
-            col5.append('%s'%category)
+            category = Counter(categories).most_common(1)[0][0]
+            col5.append(category)
         else:
-            col5.append('%s'%categories[0])
+            col5.append(categories[0])
     
 count = 0
     
