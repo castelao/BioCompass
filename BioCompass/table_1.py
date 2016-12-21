@@ -23,9 +23,8 @@ table1.drop_duplicates(subset='locus_tag', inplace=True)
 table1.reset_index(drop=True, inplace=True)
 
 # Original table_1_extender.py
-short_cluster_number = re.search(r'0*([0-9]*)', cluster_number).group(1)
 file_name = '../antiSMASH_input/%s/clusterblast/cluster%s.txt' % \
-        (refname, short_cluster_number)
+        (refname, int(cluster_number))
 df = get_hits(file_name)
 
 #table1 = pd.merge(table1, df, on='locus_tag', how='left')
