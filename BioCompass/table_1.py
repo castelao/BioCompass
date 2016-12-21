@@ -37,6 +37,7 @@ table1['best_hit_BGC'] = table1.locus
 table1['best_hit_gene'] = table1.subject_gene
 table1['best_hit_gene_loc'] = table1.hit_gene
 
+table1.fillna('None', inplace=True)
 
 gb_record = SeqIO.read(open(gb_file, "r"), "genbank")
 
