@@ -34,7 +34,10 @@ def criteria_best_git_BGC(gene1, gene2):
                     r'^\D*([0-9]*)', gene1.best_hit_gene_loc)
             gene2_best_hit_pos = re.search(
                     r'^\D*([0-9]*)', gene2.best_hit_gene_loc)
-            dif_best_hit_pos = abs(abs((int(gene2_best_hit_pos.group(1)) - int(gene1_best_hit_pos.group(1)))) - abs((gene2.id-gene1.id)))
+            dif_best_hit_pos = abs(
+                    abs(int(gene2_best_hit_pos.group(1)) \
+                           - int(gene1_best_hit_pos.group(1))) \
+                    - abs(int(gene2.n) - int(gene1.n)))
             if dif_best_hit_pos == 0:
                 score += 3
             elif dif_best_hit_pos == 1:
@@ -53,6 +56,7 @@ def score_match(gene1, gene2, criteria=None):
 
     return score
 
+table1['n'] = table1.index
 for index,row in table1.iterrows():
     scores = []
     for gene in range(0,len(table1)):
