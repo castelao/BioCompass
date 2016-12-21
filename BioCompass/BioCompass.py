@@ -350,4 +350,17 @@ def get_hits(filename, criteria='cum_BLAST_score'):
     df.dropna(subset=['query_gene'], inplace=True)
     df.sort_values(by=criteria, ascending=False, na_position='last',
             inplace=True)
-    return df.groupby('query_gene', as_index=False).first()
+
+    df = df.groupby('query_gene', as_index=False).first()
+
+    df.rename(columns={
+        'id': 'hit_id',
+        'query_gene': 'locus_tag',
+        'product': 'hit_product',
+        'coverage': 'best_hit_%cov',
+        'identity': 'best_hit_%id',
+        'locus': 'best_hit_BGC',
+        'subject_gene': 'best_hit_gene',
+        'hit_gene': 'best_hit_gene_loc'}, inplace=True)
+
+    return df

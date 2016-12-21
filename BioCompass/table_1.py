@@ -27,15 +27,9 @@ short_cluster_number = re.search(r'0*([0-9]*)', cluster_number).group(1)
 file_name = '../antiSMASH_input/%s/clusterblast/cluster%s.txt' % \
         (refname, short_cluster_number)
 df = get_hits(file_name)
-df.rename(columns={'query_gene': 'locus_tag'}, inplace=True)
-df.rename(columns={'product': 'hit_product'}, inplace=True)
+
 #table1 = pd.merge(table1, df, on='locus_tag', how='left')
 table1 = pd.merge(table1, df, on='locus_tag', how='inner')
-table1['best_hit_%cov'] = table1.coverage
-table1['best_hit_%id'] = table1.identity
-table1['best_hit_BGC'] = table1.locus
-table1['best_hit_gene'] = table1.subject_gene
-table1['best_hit_gene_loc'] = table1.hit_gene
 
 table1.fillna('None', inplace=True)
 
