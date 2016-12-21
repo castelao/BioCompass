@@ -10,7 +10,7 @@ from sklearn.cluster import DBSCAN
 script, strain_name = argv
 
 store = pd.HDFStore('%s.h5' % strain_name)
-table1_df = store['table1']
+table1 = store['table1']
 
 #This first portion will create the distance matrix
 
@@ -53,11 +53,11 @@ def score_match(gene1, gene2, criteria=None):
 
     return score
 
-for index,row in table1_df.iterrows():
+for index,row in table1.iterrows():
     scores = []
-    for gene in range(0,len(table1_df)):
-        gene1 = table1_df.loc[gene]
-        gene2 = table1_df.loc[index]
+    for gene in range(0,len(table1)):
+        gene1 = table1.loc[gene]
+        gene2 = table1.loc[index]
         scores.append(score_match(gene1, gene2))
     if index == 0:
         A = np.vstack([scores])
@@ -115,8 +115,8 @@ for itn in range(1,len(A)):
             categories = []
             genes = []
             for item in value:
-                categories.append(table1_df.category.loc[item])
-                genes.append(table1_df.locus_tag.loc[item])
+                categories.append(table1.category.loc[item])
+                genes.append(table1.locus_tag.loc[item])
             genes = ','.join(genes)
             col4.append(genes)
             find_category(categories,col5)
