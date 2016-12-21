@@ -41,9 +41,9 @@ table1.fillna('None', inplace=True)
 
 gb_record = SeqIO.read(open(gb_file, "r"), "genbank")
 
-table1_handle = open('%s_table1.csv' % strain_name, "w")
-table1.to_csv(table1_handle, sep='\t', index=False)
-table1_handle.close()
+store = pd.HDFStore('%s.h5' % strain_name)
+store['table1'] = table1
+store.close()
 
 gb_record.id = '%s' % strain_id
 
