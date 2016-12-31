@@ -3,10 +3,13 @@ from sys import argv
 import re
 import string
 from collections import defaultdict, Counter
+from itertools import combinations_with_replacement
 
 import numpy as np
 import pandas as pd
 from sklearn.cluster import DBSCAN
+
+from geneComparison import score_match
 
 script, strain_name = argv
 strain_id = os.path.basename(strain_name)
@@ -15,59 +18,18 @@ table1 = pd.read_pickle('%s.pkl' % strain_name)
 
 #This first portion will create the distance matrix
 
-def criteria_category(gene1, gene2):
-    if (gene1.category == 'hypothetical') and \
-            (gene2.category == 'hypothetical'):
-                return 1
-    elif (gene1.category == 'hypothetical') or \
-            (gene2.category == 'hypothetical'):
-                return 2
-    elif (gene1.category == gene2.category):
-            return 5
-
-
-def criteria_best_git_BGC(gene1, gene2):
-    score = 0
-    if gene1.best_hit_BGC != 'None' and gene2.best_hit_BGC != 'None':
-        if gene1.best_hit_BGC == gene2.best_hit_BGC:
-            score += 2
-            gene1_best_hit_pos = re.search(
-                    r'^\D*([0-9]*)', gene1.best_hit_gene_loc)
-            gene2_best_hit_pos = re.search(
-                    r'^\D*([0-9]*)', gene2.best_hit_gene_loc)
-            dif_best_hit_pos = abs(
-                    abs(int(gene2_best_hit_pos.group(1)) \
-                           - int(gene1_best_hit_pos.group(1))) \
-                    - abs(int(gene2.n) - int(gene1.n)))
-            if dif_best_hit_pos == 0:
-                score += 3
-            elif dif_best_hit_pos == 1:
-                score += 2
-            elif dif_best_hit_pos == 2:
-                score += 1
-    else:
-        score += 1
-
-    return score
-
-def score_match(gene1, gene2, criteria=None):
-    score = 0
-    score += criteria_category(gene1, gene2)
-    score += criteria_best_git_BGC(gene1, gene2)
-
-    return score
 
 table1['n'] = table1.index
-for index,row in table1.iterrows():
-    scores = []
-    for gene in range(0,len(table1)):
-        gene1 = table1.loc[gene]
-        gene2 = table1.loc[index]
-        scores.append(score_match(gene1, gene2))
-    if index == 0:
-        A = np.vstack([scores])
-    else:
-        A = np.vstack([A,scores])
+
+N = table1.shape[0]
+A = np.nan * np.ones(2*[N])
+for idx1, idx2 in combinations_with_replacement(range(N), 2):
+    gene1 = table1.iloc[idx1]
+    gene2 = table1.iloc[idx2]
+    score = score_match(gene1, gene2)
+    A[idx1, idx2] = score
+    A[idx2, idx1] = score
+
 
 #This second portion will run dbscan to create a subclusters possibilities
 
