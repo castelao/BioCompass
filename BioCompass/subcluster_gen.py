@@ -33,13 +33,10 @@ for idx1, idx2 in combinations_with_replacement(range(N), 2):
 
 #This second portion will run dbscan to create a subclusters possibilities
 
-def repeated(db_arrays,db):
-    for i in range(0,len(db_arrays)-1):
-        if np.array_equal(db_arrays[i],db) == False:
-            continue
-        else:
+def repeated(db_arrays, db):
+    for db0 in db_arrays:
+        if np.array_equal(db0, db):
             return True
-            break
 
 def parse_db(db):
     D = defaultdict(list)
