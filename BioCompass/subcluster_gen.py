@@ -63,9 +63,7 @@ for itn in range(1,len(A)):
         db_arrays = np.vstack([db])
     else:
         db_arrays = np.vstack([db_arrays,db])
-    if repeated(db_arrays,db) == True:
-        continue
-    else:
+    if not repeated(db_arrays, db):
         subcluster_dict = parse_db(db)
         col1 = []
         col2 = []
