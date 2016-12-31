@@ -11,8 +11,7 @@ from sklearn.cluster import DBSCAN
 script, strain_name = argv
 strain_id = os.path.basename(strain_name)
 
-store = pd.HDFStore('%s.h5' % strain_name)
-table1 = store['table1']
+table1 = pd.read_pickle('%s.pkl' % strain_name)
 
 #This first portion will create the distance matrix
 
