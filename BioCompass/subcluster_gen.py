@@ -128,7 +128,7 @@ for itn in range(1,len(A)):
         frames = {'BGC':col1, 'subcluster':col2, 'CDSs':col3, 'loci':col4, 'category':col5}
         count = count + 1
         table2 = pd.DataFrame(frames, index=None)
-        table2.to_pickle('%s_table2_%d' % (strain_id, count))
+        table2.to_pickle('%s_table2_%d.pkl' % (strain_id, count))
 
         table2_df = pd.DataFrame(frames, index=None)
         table2_df.to_csv('%s_table2_%d.csv' % (strain_name,count), sep='\t', index=False)
