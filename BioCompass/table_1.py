@@ -32,12 +32,11 @@ table1 = pd.merge(table1, df, on='locus_tag', how='inner')
 
 table1.fillna('None', inplace=True)
 
-gb_record = SeqIO.read(open(gb_file, "r"), "genbank")
-
 store = pd.HDFStore('%s.h5' % strain_name)
 store['table1'] = table1
 store.close()
 
+gb_record = SeqIO.read(open(gb_file, "r"), "genbank")
 gb_record.id = '%s' % strain_id
 
 output_handle = open("%s.gbk" % strain_name, "w")
