@@ -61,9 +61,9 @@ for itn in range(1,len(A)):
     db = DBSCAN(eps=itn, min_samples=2).fit_predict(A)
     if itn == 1:
         db_arrays = np.vstack([db])
-    else:
-        db_arrays = np.vstack([db_arrays,db])
     if not repeated(db_arrays, db):
+        if itn > 1:
+            db_arrays = np.vstack([db_arrays,db])
         subcluster_dict = parse_db(db)
         col1 = []
         col2 = []
