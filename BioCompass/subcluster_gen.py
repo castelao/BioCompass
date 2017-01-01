@@ -61,3 +61,6 @@ for itn in range(1,len(A)):
         count = count + 1
         table2 = pd.DataFrame(output, index=None)
         table2.to_pickle('%s_table2_%d.pkl' % (strain_name, count))
+
+        # To allow backward compatibility while I don't finish the upgrades.
+        table2.to_csv('%s_table2_%d.csv' % (strain_name,count), sep='\t', index=False)
