@@ -1,8 +1,6 @@
 import os
 from sys import argv
-import re
 import string
-from collections import defaultdict, Counter
 from itertools import combinations_with_replacement
 
 import numpy as np
@@ -18,7 +16,6 @@ table1 = pd.read_pickle('%s.pkl' % strain_name)
 
 #This first portion will create the distance matrix
 
-
 table1['n'] = table1.index
 
 N = table1.shape[0]
@@ -33,22 +30,10 @@ for idx1, idx2 in combinations_with_replacement(range(N), 2):
 
 #This second portion will run dbscan to create a subclusters possibilities
 
-def parse_db(db):
-    D = defaultdict(list)
-    for i,item in enumerate(db):
-        D[item].append(i)
-    D = {k:v for k,v in D.items() if len(v)>1}
-    return D
-
-def find_category(categories,col5):
+def dominant_category(categories):
     if 'biosynthetic' in categories:
-        col5.append('biosynthetic')
-    else:
-        if len(categories) > 1:
-            category = Counter(categories).most_common(1)[0][0]
-            col5.append(category)
-        else:
-            col5.append(categories[0])
+        return 'biosynthetic'
+    return categories.mode()[0]
     
 count = 0
 
@@ -58,24 +43,20 @@ for itn in range(1,len(A)):
     if not np.any([(db==d).all() for d in db_arrays]):
         db_arrays.append(db)
 
-        subcluster_dict = parse_db(db)
-        if -1 in subcluster_dict:
-            del(subcluster_dict[-1])
-
         output = {'BGC': [], 'subcluster': [], 'CDSs': [], 'loci': [],
-                'category': []}
-        for key, value in subcluster_dict.iteritems():
-            output['BGC'].append(strain_name)
-            output['subcluster'].append(string.ascii_uppercase[subcluster_dict.keys().index(key)])
-            output['CDSs'].append(len(value))
-            categories = []
-            genes = []
-            for item in value:
-                categories.append(table1.category.loc[item])
-                genes.append(table1.locus_tag.loc[item])
-            genes = ','.join(genes)
-            output['loci'].append(genes)
-            find_category(categories, output['category'])
+                'category': [], 'DBSCAN_eps': []}
+
+        # Ignores clusters -1
+        for i, cluster_id in enumerate(sorted(set(db[db>=0]))):
+            output['BGC'].append(strain_id)
+            cluster_table = table1[db==cluster_id]
+            output['CDSs'].append(len(cluster_table))
+            output['loci'].append(",".join(cluster_table.locus_tag.tolist()))
+            output['category'].append(
+                dominant_category(cluster_table.category))
+            # Is this a good idea? We're limited to 26, and with dataframe I'm not sure how subcluster would be necessary.
+            output['subcluster'].append(string.ascii_uppercase[i])
+            output['DBSCAN_eps'].append(itn)
 
         count = count + 1
         table2 = pd.DataFrame(output, index=None)
