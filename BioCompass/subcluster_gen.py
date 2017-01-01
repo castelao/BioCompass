@@ -33,11 +33,6 @@ for idx1, idx2 in combinations_with_replacement(range(N), 2):
 
 #This second portion will run dbscan to create a subclusters possibilities
 
-def repeated(db_arrays, db):
-    for db0 in db_arrays:
-        if np.array_equal(db0, db):
-            return True
-
 def parse_db(db):
     D = defaultdict(list)
     for i,item in enumerate(db):
@@ -56,14 +51,13 @@ def find_category(categories,col5):
             col5.append(categories[0])
     
 count = 0
-    
+
+db_arrays = []
 for itn in range(1,len(A)):
     db = DBSCAN(eps=itn, min_samples=2).fit_predict(A)
-    if itn == 1:
-        db_arrays = np.vstack([db])
-    if not repeated(db_arrays, db):
-        if itn > 1:
-            db_arrays = np.vstack([db_arrays,db])
+    if not np.any([(db==d).all() for d in db_arrays]):
+        db_arrays.append(db)
+
         subcluster_dict = parse_db(db)
         col1 = []
         col2 = []
