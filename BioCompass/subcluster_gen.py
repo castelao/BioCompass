@@ -77,8 +77,5 @@ for itn in range(1,len(A)):
             find_category(categories, output['category'])
 
         count = count + 1
-        table2 = pd.DataFrame(frames, index=None)
-        table2.to_pickle('%s_table2_%d.pkl' % (strain_id, count))
-
-        table2_df = pd.DataFrame(frames, index=None)
-        table2_df.to_csv('%s_table2_%d.csv' % (strain_name,count), sep='\t', index=False)
+        table2 = pd.DataFrame(output, index=None)
+        table2.to_pickle('%s_table2_%d.pkl' % (strain_name, count))
