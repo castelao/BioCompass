@@ -59,6 +59,7 @@ for itn in range(1,len(A)):
         db_arrays.append(db)
 
         subcluster_dict = parse_db(db)
+        del(subcluster_dict[-1])
         col1 = []
         col2 = []
         col3 = []
