@@ -59,7 +59,8 @@ for itn in range(1,len(A)):
         db_arrays.append(db)
 
         subcluster_dict = parse_db(db)
-        del(subcluster_dict[-1])
+        if -1 in subcluster_dict:
+            del(subcluster_dict[-1])
 
         output = {'BGC': [], 'subcluster': [], 'CDSs': [], 'loci': [],
                 'category': []}
