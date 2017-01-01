@@ -60,24 +60,22 @@ for itn in range(1,len(A)):
 
         subcluster_dict = parse_db(db)
         del(subcluster_dict[-1])
-        col1 = []
-        col2 = []
-        col3 = []
-        col4 = []
-        col5 = []
+
+        output = {'BGC': [], 'subcluster': [], 'CDSs': [], 'loci': [],
+                'category': []}
         for key, value in subcluster_dict.iteritems():
-            col1.append(strain_name)
-            col2.append(string.ascii_uppercase[subcluster_dict.keys().index(key)])
-            col3.append(len(value))
+            output['BGC'].append(strain_name)
+            output['subcluster'].append(string.ascii_uppercase[subcluster_dict.keys().index(key)])
+            output['CDSs'].append(len(value))
             categories = []
             genes = []
             for item in value:
                 categories.append(table1.category.loc[item])
                 genes.append(table1.locus_tag.loc[item])
             genes = ','.join(genes)
-            col4.append(genes)
-            find_category(categories,col5)
-        frames = {'BGC':col1, 'subcluster':col2, 'CDSs':col3, 'loci':col4, 'category':col5}
+            output['loci'].append(genes)
+            find_category(categories, output['category'])
+
         count = count + 1
         table2 = pd.DataFrame(frames, index=None)
         table2.to_pickle('%s_table2_%d.pkl' % (strain_id, count))
