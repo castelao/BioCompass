@@ -38,8 +38,9 @@ def dominant_category(categories):
 count = 0
 
 db_arrays = []
-for itn in range(1,len(A)):
-    db = DBSCAN(eps=itn, min_samples=2).fit_predict(A)
+max_distance = (((A.max(axis=0))**2).sum())**0.5
+for eps in np.arange(1, max_distance):
+    db = DBSCAN(eps=eps, min_samples=2).fit_predict(A)
     if not np.any([(db==d).all() for d in db_arrays]):
         db_arrays.append(db)
 
@@ -56,7 +57,7 @@ for itn in range(1,len(A)):
                 dominant_category(cluster_table.category))
             # Is this a good idea? We're limited to 26, and with dataframe I'm not sure how subcluster would be necessary.
             output['subcluster'].append(string.ascii_uppercase[i])
-            output['DBSCAN_eps'].append(itn)
+            output['DBSCAN_eps'].append(eps)
 
         count = count + 1
         table2 = pd.DataFrame(output, index=None)
