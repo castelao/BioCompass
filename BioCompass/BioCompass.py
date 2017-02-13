@@ -228,7 +228,7 @@ def efetch_hit(term, seq_start, seq_stop):
     return content
 
 
-def download_hits(filename, output_path):
+def download_hits(filename, output_path, verbose_level=1):
     """ Download the GenBank block for all hits by antiSMASH
     """
     c = antiSMASH_file(filename)
@@ -256,7 +256,8 @@ def download_hits(filename, output_path):
                 seq_start=min(table_genes['location_start']),
                 seq_stop=max(table_genes['location_end']))
 
-            print "Saving %s" % filename_out
+            if verbose_level > 0:
+                print("Saving %s" % filename_out)
             with open(filename_out, 'w') as f:
                 f.write(content)
 
