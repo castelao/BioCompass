@@ -228,8 +228,11 @@ def efetch_hit(term, seq_start, seq_stop):
     return content
 
 
-def download_hits(filename, output_path, verbose_level=1):
+def download_hits(filename, output_path, verbose_level=0):
     """ Download the GenBank block for all hits by antiSMASH
+
+        ATENTION, if use verbose_level>0 while still running with Makefile
+          it will generate an improper gbkHits.txt: "Already downloaded ..."
     """
     c = antiSMASH_file(filename)
 
@@ -247,12 +250,16 @@ def download_hits(filename, output_path, verbose_level=1):
         output.append(filename_out)
 
         if os.path.isfile(filename_out):
-            print "Already downloaded %s" % filename_out
+            if verbose_level > 1:
+                print("Already downloaded %s" % filename_out)
+
         else:
-            print "Requesting cluster_subject: %s, start: %s, end: %s" % (
+            if verbose_level > 0:
+                msg = "Requesting cluster_subject: %s, start: %s, end: %s" % (
                     locus,
                     min(table_genes['location_start']),
                     max(table_genes['location_end']))
+                print(msg)
 
             content = efetch_hit(
                 term=locus,
