@@ -233,6 +233,7 @@ def download_hits(filename, output_path, verbose_level=1):
     """
     c = antiSMASH_file(filename)
 
+    output = []
     for cs in c['SignificantHits']:
         locus = c['SignificantHits'][cs]['locus']
         table_genes = c['SignificantHits'][cs]['TableGenes']
@@ -242,6 +243,8 @@ def download_hits(filename, output_path, verbose_level=1):
                 "%s_%s-%s.gbk" % (locus,
                     min(table_genes['location_start']),
                     max(table_genes['location_end'])))
+
+        output.append(filename_out)
 
         if os.path.isfile(filename_out):
             print "Already downloaded %s" % filename_out
@@ -260,6 +263,8 @@ def download_hits(filename, output_path, verbose_level=1):
                 print("Saving %s" % filename_out)
             with open(filename_out, 'w') as f:
                 f.write(content)
+
+    return output
 
 
 import urlparse
