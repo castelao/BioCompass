@@ -18,7 +18,9 @@ def main():
 def downloadHits(mgbfile, outputdir):
     """Download NCBI clusters listed t in multigeneblast file."""
     for f in mgbfile:
-        download_hits(f, outputdir)
+        gbklist = download_hits(f, outputdir)
+        for filename in gbklist:
+            print(filename)
 
 @main.command(name="download-MIBiG")
 @click.option('--outputdir', default='./', type=click.Path(exists=True),
