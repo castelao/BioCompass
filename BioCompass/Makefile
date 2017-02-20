@@ -18,7 +18,7 @@ TABLEDIR=$(OUTPUTDIR)/tables
 MAKEDB=$(MULTIGENEBLASTDIR)/makedb.py
 MULTIGENEBLAST=$(MULTIGENEBLASTDIR)/multigeneblast.py
 
-ClustersDatabase=$(OUTPUTDIR)/database_clusters
+ClustersDatabase=$(ROOT)/database_clusters
 
 GBK_INPUT_LIST=$(shell ls $(INPUTDIR)/$(REFNAME)/*cluster*.gbk)
 CLUSTER_LIST=$(shell find  $(INPUTDIR)/$(REFNAME)/clusterblast -iname 'cluster*txt')
