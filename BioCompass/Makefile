@@ -31,7 +31,7 @@ ifdef TESTING
     endif
 endif
 
-TABLE2_1 = $(foreach v, $(GBK_INPUT_LIST), $(TABLEDIR)/$(REFNAME)_$(shell basename $v | sed -e s/.*cluster// | sed -e s/\.gbk//)_table2_1.csv)
+TABLE2_1 = $(foreach v, $(GBK_INPUT_LIST), $(TABLEDIR)/$(REFNAME)_$(shell basename $v | sed -e s/.*cluster// | sed -e s/\.gbk//)_table2_1.pkl)
 # ============================================================================
 .SECONDARY:
 
@@ -49,7 +49,7 @@ $(TABLEDIR)/$(REFNAME)_%.gbk:
 	# python table_1_gen.py ../antiSMASH_input/PAL/c00001_Moorea_...cluster001.gbk PAL_001 PAL 001
 	python $(SRC)/table_1.py `ls $(INPUTDIR)/$(REFNAME)/*cluster$*.gbk` $(TABLEDIR)/$(REFNAME)_$* $(REFNAME) $*
 
-$(TABLEDIR)/$(REFNAME)_%_table2_1.csv: $(TABLEDIR)/$(REFNAME)_%.gbk
+$(TABLEDIR)/$(REFNAME)_%_table2_1.pkl: $(TABLEDIR)/$(REFNAME)_%.gbk
 	# D. Creating distance matrixes and running DBScan for subcluster divisions (table 2):
 	cd $(TABLEDIR); python $(SRC)/subcluster_gen.py $(REFNAME)_$*
 
