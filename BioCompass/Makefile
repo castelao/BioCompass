@@ -63,7 +63,7 @@ $(TABLEDIR)/gbkHits.txt: $(ClustersDatabase)/MIBiG
 		$(CLUSTER_LIST) > $@
 	#BioCompass doctor $(ClustersDatabase) $(CUSTOMDB) ...
 
-$(TABLEDIR)/$(REFNAME)_db: $(ClustersDatabase)
+$(TABLEDIR)/$(REFNAME)_db: $(TABLEDIR)/gbkHits.txt
 	# E. Creating multigeneBLAST database:
 	#
 	# cd ../../multigeneblast_1.1.14/
