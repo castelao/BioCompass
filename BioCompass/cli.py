@@ -4,6 +4,7 @@ import click
 
 from .BioCompass import download_hits
 from .BioCompass import download_mibig
+from .BioCompass import createdb
 
 @click.group()
 def main():
@@ -27,6 +28,18 @@ def downloadHits(mgbfile, outputdir):
 def downloadMIBiG(outputdir, version):
     """Download MIBiG gbk database."""
     download_mibig(outputdir, version=version)
+
+@main.command(name="createdb")
+@click.option('--gbkdb', type=click.Path(exists=True),
+        help='Path to downloaded gbk files')
+@click.option('--outputdb', default=None, type=unicode,
+        help='Path to database to be created')
+@click.option('--multigeneblastdir', default=None, type=click.Path(exists=True),
+        help='Path to database to be created')
+@click.argument('clusterlist', type=unicode, nargs=-1)
+def cli_createdb(gbkdb, outputdb, multigeneblastdir, clusterlist):
+    createdb(gbkdb, outputdb, multigeneblastdir, clusterlist)
+
 
 if __name__ == "__main__":
     main()
