@@ -5,6 +5,7 @@ import time
 import json
 from collections import OrderedDict
 import pkg_resources
+import subprocess
 
 import pandas as pd
 from Bio import SeqIO
@@ -377,3 +378,42 @@ def get_hits(filename, criteria='cum_BLAST_score'):
         'hit_gene': 'best_hit_gene_loc'}, inplace=True)
 
     return df
+
+
+def createdb(gbkdb, outputdb, multigeneblastdir, clusterlist):
+    """ This is really not the best way to do it!!!
+
+        ATENTION, make sure that exists: multigeneblast/exec/makeblastdb
+    """
+    assert os.path.isdir(multigeneblastdir)
+
+    env = os.environ.copy()
+    env['PATH'] += ":%s" % multigeneblastdir
+
+    gbklist = []
+    for f in clusterlist:
+        c = antiSMASH_file(f)
+        for cs in c['SignificantHits']:
+            locus = c['SignificantHits'][cs]['locus']
+            table_genes = c['SignificantHits'][cs]['TableGenes']
+
+            filename_out = os.path.join(
+                    gbkdb,
+                    "%s_%s-%s.gbk" % (locus,
+                        min(table_genes['location_start']),
+                        max(table_genes['location_end'])))
+            gbklist.append(filename_out)
+
+    d = os.path.dirname(outputdb)
+    if d != '':
+        os.chdir(d)
+
+    for ext in ['cords.tar', 'phr', 'pinfo.tar', 'txt', 'pal', 'pin', 'psq']:
+        f = "%s.%s" % (outputdb, ext)
+        if os.path.exists(f):
+            os.remove(f)
+
+    args = ["python", os.path.join(multigeneblastdir, "makedb.py")]
+    args.append(os.path.basename(outputdb))
+    args += [f for f in gbklist]
+    p = subprocess.call(args, env=env)
