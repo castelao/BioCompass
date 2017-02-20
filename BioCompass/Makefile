@@ -65,24 +65,17 @@ $(TABLEDIR)/gbkHits.txt: $(ClustersDatabase)/MIBiG
 
 $(TABLEDIR)/$(REFNAME)_db: $(TABLEDIR)/gbkHits.txt
 	# E. Creating multigeneBLAST database:
-	#
-	# cd ../../multigeneblast_1.1.14/
-	#
-	# ls -d ../database_clusters/*/ | cat > subjects.txt
-	#
-	# command=`cat subjects.txt | awk -v ORS='* '  '{ print $1 }' | sed 's/,$/\n/'`
-	#
-	# python makedb.py $1_db $command
-	#
-	# rm subjects.txt
-	#
-	# makedb.py PAL_db
 
 	mkdir -p `dirname $@`
-	export PATH="$(PATH):$(MULTIGENEBLASTDIR)"; \
-	cd `dirname $@`; \
-	python $(MAKEDB) `basename $@` \
-		`find $(ClustersDatabase) -name '*gbk' | awk '{print $$0}' ORS=' '`
+
+	# python /Users/castelao/work/projects/BioCompass/multigeneblast/makedb.py PAL_db  /Users/castelao/work/projects/BioCompass/database_clusters/CP003219_3778310-3878713.gbk /Users/castelao/work/projects/BioCompass/database_clusters/AWQX01000149_10258-9833.gbk
+
+	BioCompass createdb --outputdb $@ \
+		--gbklist=$(TABLEDIR)/gbkHits.txt \
+		--multigeneblastdir=$(MULTIGENEBLASTDIR)
+	# I should be able to run ... (MAKEDB) $@ ...
+
+        #makeblastdb -dbtype prot -out /Users/castelao/work/projects/others/BioCompass/outputs/tables/PAL_db -in /Users/castelao/work/projects/others/BioCompass/outputs/tables/PAL_db_dbbuild.fasta
 
 
 $(MBGDIR)/$(REFNAME)_001_1_A: $(TABLE2_1) $(TABLEDIR)/$(REFNAME)_db
