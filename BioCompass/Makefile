@@ -57,9 +57,11 @@ $(ClustersDatabase)/MIBiG:
 	mkdir -p $@
 	BioCompass download-MIBiG --outputdir $@
 
-$(ClustersDatabase): $(ClustersDatabase)/MIBiG
-	mkdir -p $@
-	BioCompass download-hits --outputdir $@ $(CLUSTER_LIST)
+$(TABLEDIR)/gbkHits.txt: $(ClustersDatabase)/MIBiG
+	mkdir -p `dirname $@`
+	BioCompass download-hits --outputdir $(ClustersDatabase) \
+		$(CLUSTER_LIST) > $@
+	#BioCompass doctor $(ClustersDatabase) $(CUSTOMDB) ...
 
 $(TABLEDIR)/$(REFNAME)_db: $(ClustersDatabase)
 	# E. Creating multigeneBLAST database:
