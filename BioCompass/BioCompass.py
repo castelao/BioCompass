@@ -380,7 +380,7 @@ def get_hits(filename, criteria='cum_BLAST_score'):
     return df
 
 
-def createdb(gbkdb, outputdb, multigeneblastdir, clusterlist):
+def createdb(outputdb, multigeneblastdir, gbklist, gbk):
     """ This is really not the best way to do it!!!
 
         ATENTION, make sure that exists: multigeneblast/exec/makeblastdb
@@ -390,19 +390,12 @@ def createdb(gbkdb, outputdb, multigeneblastdir, clusterlist):
     env = os.environ.copy()
     env['PATH'] += ":%s" % multigeneblastdir
 
-    gbklist = []
-    for f in clusterlist:
-        c = antiSMASH_file(f)
-        for cs in c['SignificantHits']:
-            locus = c['SignificantHits'][cs]['locus']
-            table_genes = c['SignificantHits'][cs]['TableGenes']
+    if gbklist is None:
+        gbklist = []
+    else:
+        gbklist = open(gbklist, 'r').read().split()
 
-            filename_out = os.path.join(
-                    gbkdb,
-                    "%s_%s-%s.gbk" % (locus,
-                        min(table_genes['location_start']),
-                        max(table_genes['location_end'])))
-            gbklist.append(filename_out)
+    gbklist += list(gbk)
 
     d = os.path.dirname(outputdb)
     if d != '':

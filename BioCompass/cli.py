@@ -30,15 +30,15 @@ def downloadMIBiG(outputdir, version):
     download_mibig(outputdir, version=version)
 
 @main.command(name="createdb")
-@click.option('--gbkdb', type=click.Path(exists=True),
-        help='Path to downloaded gbk files')
 @click.option('--outputdb', default=None, type=unicode,
         help='Path to database to be created')
 @click.option('--multigeneblastdir', default=None, type=click.Path(exists=True),
         help='Path to database to be created')
-@click.argument('clusterlist', type=unicode, nargs=-1)
-def cli_createdb(gbkdb, outputdb, multigeneblastdir, clusterlist):
-    createdb(gbkdb, outputdb, multigeneblastdir, clusterlist)
+@click.option('--gbklist', default=None, type=click.Path(exists=True),
+        help='ASCII file with list of GBK to process')
+@click.argument('gbk', type=unicode, nargs=-1)
+def cli_createdb(outputdb, multigeneblastdir, gbklist, gbk):
+    createdb(outputdb, multigeneblastdir, gbklist, gbk)
 
 
 if __name__ == "__main__":
