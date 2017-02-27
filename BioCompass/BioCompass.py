@@ -410,3 +410,24 @@ def createdb(outputdb, multigeneblastdir, gbklist, gbk):
     args.append(os.path.basename(outputdb))
     args += [f for f in gbklist]
     p = subprocess.call(args, env=env)
+
+
+def gbk_cds2fasta(gbk_filenames, fasta_filename):
+    sign = lambda x: '+' if x > 0 else '-'
+
+    with open(fasta_filename, "w") as output_handle:
+        for input_handle in gbk_filenames:
+            for sequences in SeqIO.parse(input_handle, "genbank"):
+                for feature in sequences.features:
+                    if feature.type == "CDS":
+                        tmp = ">%s|%s-%s|%s|%s|%s|%s\n%s\n" % (
+                                sequences.name,
+                                feature.location.start.position + 1,
+                                feature.location.end.position,
+                                sign(feature.location.strand),
+                                feature.qualifiers['protein_id'][0].\
+                                        split(".")[0],
+                                feature.qualifiers['product'][0],
+                                feature.qualifiers['locus_tag'][0],
+                                feature.qualifiers['translation'][0])
+                        output_handle.write(tmp)
